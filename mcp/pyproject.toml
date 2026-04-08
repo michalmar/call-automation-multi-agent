@@ -1,0 +1,17 @@
+[project]
+name = "sz-mcp-server"
+version = "0.1.0"
+description = "MCP server with Azure AI Search vector search"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp[cli]",
+    "agent-framework",
+    "azure-identity",
+    "azure-search-documents>=11.6.0",
+    "azure-storage-blob",
+    "openai",
+    "python-dotenv",
+]
+
+[project.scripts]
+server = "server:mcp.run"

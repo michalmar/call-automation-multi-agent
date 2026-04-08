@@ -6,6 +6,8 @@ requires-python = ">=3.11"
 dependencies = [
     "openai",
     "python-dotenv",
+    "azure-storage-blob",
+    "azure-identity",
 ]
 
 [tool.uv]
