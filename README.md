@@ -1,10 +1,50 @@
 # SZ Call Analytics
 
-This repository is intended for call analytics and automation work.
+Call analytics and automation platform for Czech railway infrastructure (SZ). The project includes an MCP server with vector search and audio transcription, supporting tools for data preparation, and Terraform IaC for the full Azure deployment.
 
-At the moment, the project mostly contains helper tools collected under [tools/SR70-view](tools/SR70-view) and [tools/transcribe-batch](tools/transcribe-batch).
+## Architecture
+
+- **MCP Server** (`mcp/`) — Model Context Protocol server deployed to Azure Container Apps. Exposes two tools:
+  - `search_navestidla` — vector search over railway signalling equipment via Azure AI Search
+  - `transcribe` — audio transcription from Azure Blob Storage via Azure OpenAI
+- **Infrastructure** (`infra/`) — Terraform configuration for all Azure resources (ACR, AI Search, Storage, ACA, RBAC). See [infra/deployment.md](infra/deployment.md) for the full deployment guide.
+- **Tools** (`tools/`) — Data preparation and ingestion utilities.
+
+All Azure services authenticate via **managed identity** (`DefaultAzureCredential`) — no API keys.
+
+## Quick Start
+
+### Deploy infrastructure & application
+
+```bash
+cd infra
+cp terraform.tfvars.example terraform.tfvars   # edit with your values
+terraform init && terraform apply               # Phase 1: provision Azure resources
+./deploy.sh                                     # Phase 2: build & deploy MCP server
+```
+
+For detailed instructions, prerequisites, and architecture diagrams see **[infra/deployment.md](infra/deployment.md)**.
+
+### Populate the search index
+
+```bash
+cd tools/aisearch_ingestion
+uv sync
+cp .env.example .env   # edit with your endpoints
+uv run python create_index.py
+uv run python ingest.py input_test2.csv
+```
 
 ## Tools
+
+### `tools/aisearch_ingestion`
+
+Scripts to create and populate the Azure AI Search vector index from CSV data.
+
+- `create_index.py` — creates the search index schema (vectorized `vyhledavaci_string` column, 3072-dim `text-embedding-3-large`)
+- `ingest.py` — reads a `;`-delimited CSV, generates embeddings, and uploads documents in batches
+
+See also: [tools/aisearch_ingestion/README.md](tools/aisearch_ingestion/README.md)
 
 ### `tools/SR70-view`
 
@@ -72,4 +112,4 @@ See also: [tools/transcribe-batch/README.md](tools/transcribe-batch/README.md)
 
 ## Status
 
-The main call analytics pipeline is not here yet. Right now this repository serves as a place for supporting utilities that help with data preparation, inspection, and transcription.
+The MCP server is deployed to Azure Container Apps and consumed by Azure AI Foundry Agent Service. Infrastructure is managed via Terraform with a companion deployment script for application updates.
