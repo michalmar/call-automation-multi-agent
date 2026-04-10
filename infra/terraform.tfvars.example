@@ -1,0 +1,16 @@
+subscription_id = "<SUBSCRIPTION>"
+
+resource_group_name = "<RESOURCE_GROUP>"
+location            = "eastus2"
+prefix              = "sz"
+
+# External Azure OpenAI / AI Services resource (not managed here)
+openai_resource_id          = "/subscriptions/<SUBSCRIPTION>/resourceGroups/<FOUNDRY_RG>/providers/Microsoft.CognitiveServices/accounts/<FOUNDRY_PROJECT>"
+openai_endpoint             = "https://<FOUNDRY>.openai.azure.com"
+openai_embedding_deployment = "text-embedding-3-large"
+openai_transcription_model  = "gpt-4o-transcribe-diarize"
+openai_api_version          = "2025-04-01-preview"
+
+tags = {
+  project = "sz-call-analytics"
+}

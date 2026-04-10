@@ -1,6 +1,27 @@
+# Python
 .venv/
 __pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# Environment variables (secrets/endpoints)
 .env
+
+# Terraform
+*.tfvars
+!*.tfvars.example
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+*.tfplan
+
+# Data files
 in/
 out/
-node_modules/
+*.csv
+
+# OS
+.DS_Store
